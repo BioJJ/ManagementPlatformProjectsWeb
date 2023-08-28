@@ -10,6 +10,8 @@
     "prepare": "husky install"
   },
   "dependencies": {
+    "dayjs": "^1.11.9",
+    "vanilla-masker": "^1.2.0",
     "vue": "^3.3.4",
     "vue-router": "4",
     "vuetify": "^3.3.14"
@@ -17,6 +19,7 @@
   "devDependencies": {
     "@commitlint/cli": "^17.7.1",
     "@commitlint/config-conventional": "^17.7.0",
+    "@types/vanilla-masker": "^1.2.1",
     "@typescript-eslint/eslint-plugin": "^6.4.1",
     "@typescript-eslint/parser": "^6.4.1",
     "@vitejs/plugin-vue": "^4.2.3",

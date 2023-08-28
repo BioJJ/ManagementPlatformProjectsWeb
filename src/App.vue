@@ -1,5 +1,9 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import RegisterActivityDialog from './components/RegisterActivityDialog.vue'
+</script>
 
 <template>
-	<v-app> </v-app>
+	<v-app>
+		<RegisterActivityDialog />
+	</v-app>
 </template>
