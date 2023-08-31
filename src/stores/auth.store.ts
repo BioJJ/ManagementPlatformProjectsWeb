@@ -4,6 +4,7 @@ import { AuthService } from './../services/auth.service'
 import { UserLogin } from '../models/userLogin'
 import { AccessTokenResponse } from '../models/accessTokenResponse'
 import { User } from '../models/User'
+import { UserRegistry } from '../models/userRegistry'
 
 const service = new AuthService()
 
@@ -41,12 +42,14 @@ export const useAuthStore = defineStore('auth', {
 		checkToken() {
 			return this.token !== null
 		},
-
 		setToken(token: string) {
 			this.token = token
 		},
 		userChecked(payload: User) {
 			this.user = payload
+		},
+		async registry(userRegistry: UserRegistry) {
+			return await service.register(userRegistry)
 		}
 	}
 })

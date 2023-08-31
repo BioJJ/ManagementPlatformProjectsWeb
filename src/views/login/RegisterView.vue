@@ -1,70 +1,79 @@
 <template>
 	<div class="container">
-		<form @submit.prevent="register">
-			<h2 class="mb-3">Register</h2>
+		<v-form @submit.prevent="register" v-model="formIsValid">
+			<h2 class="mb-5">Register</h2>
 			<div class="input">
-				<label for="email">Email address</label>
-				<input
-					class="form-control"
-					v-model="email"
-					type="text"
-					name="email"
-					placeholder="email@address.com"
-				/>
+				<v-text-field
+					v-model="userRegistry.username"
+					label="UserName"
+					:rules="validators.userName"
+					type="txt"
+				></v-text-field>
+			</div>
+
+			<div class="input">
+				<v-text-field
+					v-model="userRegistry.name"
+					label="Name"
+					:rules="validators.name"
+					type="txt"
+				></v-text-field>
 			</div>
 			<div class="input">
-				<label for="password">Password</label>
-				<input
-					class="form-control"
-					v-model="password"
+				<v-text-field
+					v-model="userRegistry.password"
+					label="Senha"
+					:rules="validators.password"
 					type="password"
-					name="password"
-					placeholder="password123"
-				/>
+				></v-text-field>
 			</div>
 
 			<div class="alternative-option mt-4">
 				Already have an account? <span @click="moveToLogin">Login</span>
 			</div>
 
-			<button type="submit" id="register_button" class="mt-4 btn-pers">
-				Register
-			</button>
-			<div
-				class="alert alert-warning alert-dismissible fade show mt-5 d-none"
-				role="alert"
-				id="alert_2"
+			<v-btn
+				:disabled="!formIsValid"
+				type="submit"
+				id="register_button"
+				class="mt-4 btn-pers"
 			>
-				Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-				<button
-					type="button"
-					class="btn-close"
-					data-bs-dismiss="alert"
-					aria-label="Close"
-				></button>
-			</div>
-		</form>
+				Register
+			</v-btn>
+		</v-form>
 	</div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import { UserRegistry } from '../../models/userRegistry'
+import { Validator } from '../../_helpers/validators'
+import { useAuthStore } from './../../stores/auth.store'
+
 export default defineComponent({
 	// eslint-disable-next-line vue/multi-word-component-names
 	name: 'Register',
 
 	data() {
 		return {
-			email: '',
-			password: '123456'
+			store: useAuthStore(),
+			userRegistry: new UserRegistry(),
+			formIsValid: false,
+			validators: {
+				userName: [Validator.required()],
+				password: [Validator.required()],
+				name: [Validator.required()]
+			}
 		}
 	},
 	methods: {
-		register() {
-			// data update
+		async register() {
+			await this.store.registry(this.userRegistry)
+
+			this.$router.push('/login')
 		},
 		moveToLogin() {
-			this.$router.push('/')
+			this.$router.push('/login')
 		}
 	}
 })

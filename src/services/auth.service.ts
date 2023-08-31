@@ -2,6 +2,7 @@ import api from '../_helpers/axios'
 import { User } from '../models/User'
 import { AccessTokenResponse } from '../models/accessTokenResponse'
 import { UserLogin } from '../models/userLogin'
+import { UserRegistry } from '../models/userRegistry'
 
 export class AuthService {
 	registerPath: string = 'register'
@@ -33,11 +34,11 @@ export class AuthService {
 		)
 	}
 
-	// registrar(item: UsuarioCadastro) {
-	// 	return api.post<UsuarioCadastro>(`/auth/${this.registerPath}`, item)
-	// }
+	register(item: UserRegistry) {
+		return api.post<User>(`api/users/${this.registerPath}`, item)
+	}
 
 	checkToken(userName: string) {
-		return api.post<User>(`api/users/${userName}`)
+		return api.get<User>(`api/users/${userName}`)
 	}
 }

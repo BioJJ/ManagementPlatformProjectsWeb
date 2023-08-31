@@ -1,47 +1,35 @@
 <template>
 	<div class="container">
-		<form @submit.prevent="login">
-			<h2 class="mb-3">Login</h2>
+		<v-form @submit.prevent="login" v-model="formIsValid">
+			<h2 class="mb-5">Login</h2>
 			<div class="input">
-				<label for="email">UserName</label>
-				<input
-					class="form-control"
-					type="text"
-					name="text"
-					placeholder="UserName"
-					v-model="userName"
-				/>
+				<v-text-field
+					v-model="dadosLogin.username"
+					label="UserName"
+					:rules="validators.userName"
+					type="txt"
+				></v-text-field>
 			</div>
 			<div class="input">
-				<label for="password">Password</label>
-				<input
-					class="form-control"
+				<v-text-field
+					v-model="dadosLogin.password"
+					label="password"
+					:rules="validators.password"
 					type="password"
-					name="password"
-					placeholder="password123"
-					v-model="password"
-				/>
+				></v-text-field>
 			</div>
 			<div class="alternative-option mt-4">
 				You don't have an account? <span @click="moveToRegister">Register</span>
 			</div>
-			<button type="submit" class="mt-4 btn-pers" id="login_button">
-				Login
-			</button>
-			<div
-				class="alert alert-warning alert-dismissible fade show mt-5 d-none"
-				role="alert"
-				id="alert_1"
+			<v-btn
+				:disabled="!formIsValid"
+				type="submit"
+				class="mt-4 btn-pers"
+				id="login_button"
 			>
-				Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-				<button
-					type="button"
-					class="btn-close"
-					data-bs-dismiss="alert"
-					aria-label="Close"
-				></button>
-			</div>
-		</form>
+				Login
+			</v-btn>
+		</v-form>
 	</div>
 </template>
 
@@ -58,24 +46,20 @@ export default defineComponent({
 		return {
 			store: useAuthStore(),
 			dadosLogin: new UserLogin(),
-			userName: '',
-			password: '',
 			formIsValid: false,
-			validadores: {
-				email: [Validator.required()],
+			validators: {
+				userName: [Validator.required()],
 				senha: [Validator.required()]
 			}
 		}
 	},
 	methods: {
 		async login() {
-			this.dadosLogin.username = this.userName
-			this.dadosLogin.password = this.password
 			await this.store.login(this.dadosLogin)
 
-			// if(this.store.getIsAuthenticated){
-			// 	this.$router.push({ name: 'Home' })
-			// }
+			if (this.store.getIsAuthenticated) {
+				this.$router.push({ name: 'Home' })
+			}
 		},
 		moveToRegister() {
 			this.$router.push('/register')
