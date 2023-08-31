@@ -8,11 +8,7 @@ export class AuthService {
 	registerPath: string = 'register'
 	loginPath: string = 'token'
 
-	constructor() {}
-
 	login(item: UserLogin) {
-		console.log('dadosLogin =>', item)
-
 		const authHeader = `Basic ${btoa('management-platform-projects:@321')}`
 
 		const formData = new URLSearchParams()
