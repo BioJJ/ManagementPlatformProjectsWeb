@@ -1,4 +1,4 @@
-import { RouteLocationNormalized } from 'vue-router'
+import { NavigationGuardNext, RouteLocationNormalized } from 'vue-router'
 import { useAuthStore } from './../stores/auth.store'
 import { AuthService } from '../services/auth.service'
 import { decodeToken } from './utils'
@@ -6,8 +6,7 @@ import { decodeToken } from './utils'
 export function authGuard(
 	to: RouteLocationNormalized,
 	from: RouteLocationNormalized,
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	next: any
+	next: NavigationGuardNext
 ) {
 	const service = new AuthService()
 	const store = useAuthStore()
@@ -45,4 +44,25 @@ export function authGuard(
 		}
 		return next()
 	}
+}
+
+export function authGuardLayout(
+	to: RouteLocationNormalized,
+	from: RouteLocationNormalized,
+	next: NavigationGuardNext
+) {
+	const store = useAuthStore()
+
+	if (to.path === '/login') {
+		if (store.isAuthenticated) {
+			return next('/home')
+		}
+		return next()
+	}
+
+	if (!store.isAuthenticated) {
+		return next('/login')
+	}
+
+	return next()
 }

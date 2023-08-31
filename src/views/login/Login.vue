@@ -1,36 +1,39 @@
 <template>
-	<div class="container">
-		<v-form @submit.prevent="login" v-model="formIsValid">
-			<h2 class="mb-5">Login</h2>
-			<div class="input">
-				<v-text-field
-					v-model="dadosLogin.username"
-					label="UserName"
-					:rules="validators.userName"
-					type="txt"
-				></v-text-field>
-			</div>
-			<div class="input">
-				<v-text-field
-					v-model="dadosLogin.password"
-					label="password"
-					:rules="validators.password"
-					type="password"
-				></v-text-field>
-			</div>
-			<div class="alternative-option mt-4">
-				You don't have an account? <span @click="moveToRegister">Register</span>
-			</div>
-			<v-btn
-				:disabled="!formIsValid"
-				type="submit"
-				class="mt-4 btn-pers"
-				id="login_button"
-			>
-				Login
-			</v-btn>
-		</v-form>
-	</div>
+	<v-main class="main">
+		<div class="container">
+			<v-form @submit.prevent="login" v-model="formIsValid">
+				<h2 class="mb-5">Login</h2>
+				<div class="input">
+					<v-text-field
+						v-model="dadosLogin.username"
+						label="UserName"
+						:rules="validators.userName"
+						type="txt"
+					></v-text-field>
+				</div>
+				<div class="input">
+					<v-text-field
+						v-model="dadosLogin.password"
+						label="password"
+						:rules="validators.password"
+						type="password"
+					></v-text-field>
+				</div>
+				<div class="alternative-option mt-4">
+					You don't have an account?
+					<span @click="moveToRegister">Register</span>
+				</div>
+				<v-btn
+					:disabled="!formIsValid"
+					type="submit"
+					class="mt-4 btn-pers"
+					id="login_button"
+				>
+					Login
+				</v-btn>
+			</v-form>
+		</div>
+	</v-main>
 </template>
 
 <script lang="ts">
@@ -69,6 +72,16 @@ export default defineComponent({
 </script>
 
 <style lang="css">
+.main {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	border: 1px solid lightgray;
+	padding: 4rem 4rem;
+	border-radius: 5px;
+	background: #fefefe;
+}
 .container {
 	width: 400px;
 	max-width: 95%;
