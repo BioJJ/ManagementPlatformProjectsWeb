@@ -14,9 +14,12 @@ export function authGuard(
 		if (localStorage.getItem('accessToken')) {
 			const token = JSON.stringify(localStorage.getItem('accessToken'))
 			if (decodeToken(token).exp < Math.round(new Date().getTime() / 1000)) {
+				localStorage.removeItem('accessToken')
+				localStorage.removeItem('userName')
 				if (to.path == '/login') return next()
 				return next('/login')
 			}
+
 			store.setToken(JSON.parse(token))
 
 			if (localStorage.getItem('userName')) {
