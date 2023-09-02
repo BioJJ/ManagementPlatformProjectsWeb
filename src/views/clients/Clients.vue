@@ -108,7 +108,6 @@ export default defineComponent({
 			]
 		}
 	},
-	async created() {},
 	mounted() {
 		this.getClients()
 	},
