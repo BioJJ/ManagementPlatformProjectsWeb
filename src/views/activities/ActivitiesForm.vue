@@ -11,7 +11,7 @@
 				<v-card class="pa-10 pgc-card-box pgc-card-crud">
 					<v-form ref="form" lazy-validation>
 						<div class="pgc-crud-header">
-							<h2>Project</h2>
+							<h2>Activity Form</h2>
 							<v-progress-linear
 								value="8"
 								color="primary"
@@ -20,19 +20,19 @@
 							/>
 						</div>
 						<v-row class="pgc-form-row">
-							<v-col cols="8">
+							<v-col cols="12">
 								<v-text-field
-									:rules="validators.projectName"
-									v-model="project.projectName"
-									label="Name"
+									:rules="validators.description"
+									v-model="activity.description"
+									label="Description"
 									dense
 								></v-text-field>
 							</v-col>
 
 							<v-col cols="4">
 								<v-autocomplete
-									v-model="project.projectStatus"
-									:rules="validators.projectStatus"
+									v-model="activity.status"
+									:rules="validators.status"
 									dense
 									label="Status"
 									:items="['Em andamento', 'Pausado', 'Concluído', 'Suspenso']"
@@ -42,7 +42,7 @@
 							<v-col cols="4">
 								<v-text-field
 									:rules="validators.startDate"
-									v-model="project.startDate"
+									v-model="activity.startDate"
 									label="startDate"
 									dense
 								></v-text-field>
@@ -53,15 +53,15 @@
 							<v-col cols="4">
 								<v-text-field
 									:rules="validators.expectedEndDate"
-									v-model="project.expectedEndDate"
+									v-model="activity.expectedEndDate"
 									label="expected End Date"
 									dense
 								></v-text-field>
 							</v-col>
 
-							<v-col cols="4">
+							<v-col cols="6">
 								<v-autocomplete
-									v-model="project.client"
+									v-model="activity.client"
 									:rules="validators.client"
 									dense
 									label="Client"
@@ -70,11 +70,23 @@
 									return-object
 								></v-autocomplete>
 							</v-col>
+
+							<v-col cols="6">
+								<v-autocomplete
+									v-model="activity.project"
+									:rules="validators.project"
+									dense
+									label="Project"
+									:items="projects"
+									item-title="projectName"
+									return-object
+								></v-autocomplete>
+							</v-col>
 						</v-row>
 					</v-form>
 					<div class="d-flex justify-start mt-15">
 						<v-btn
-							to="/projects"
+							to="/activities"
 							color="red"
 							outlined
 							class="ml-5 pgc-btn-form"
@@ -109,10 +121,11 @@ import { defineComponent } from 'vue'
 
 import { Validator } from '../../_helpers/validators'
 import { useToast } from 'vue-toastification'
-import { Project } from '../../models/Project'
 import Pagination from '../../models/Pagination'
 import { useProjectStore } from '../../stores/project.store'
 import { useClientStore } from './../../stores/client.store'
+import { useActivityStore } from './../../stores/activity.store'
+import { Activity } from '../../models/Activity'
 
 // import { VDatePicker } from 'vuetify/labs/VDatePicker'
 
@@ -124,49 +137,59 @@ export default defineComponent({
 	data: () => ({
 		formLoading: false,
 		validators: {
-			projectName: [Validator.required(), Validator.max(100), Validator.min(4)],
+			description: [Validator.required(), Validator.max(100), Validator.min(4)],
 			startDate: [Validator.required()],
 			expectedEndDate: [Validator.required()],
-			projectStatus: [Validator.required()],
-			client: [Validator.required()]
+			status: [Validator.required()],
+			client: [Validator.required()],
+			project: [Validator.required()]
 		},
-		project: new Project(),
+		activity: new Activity(),
 		toast: useToast(),
-		store: useProjectStore(),
+		store: useActivityStore(),
 		storeClient: useClientStore(),
+		storeProject: useProjectStore(),
 		pagination: Pagination.build(),
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		clients: [] as any[]
+		clients: [] as any[],
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		projects: [] as any[]
 	}),
 
 	mounted(): void {
 		this.getClients()
-		this.$route.params.id && this.getProject()
+		this.getProjects()
+
+		this.$route.params.id && this.getActivity()
 	},
 	methods: {
-		async getProject() {
+		async getActivity() {
 			try {
-				this.project = await this.store.fetchProject(this.$route.params.id)
+				this.activity = await this.store.fetchActivity(this.$route.params.id)
 			} catch (error) {
-				this.toast.error('Project not found')
+				this.toast.error('Activity not found')
 			}
 		},
 		async getClients() {
 			await this.storeClient.fetchClients(this.pagination)
 			this.clients = this.storeClient.getClientsList
 		},
+		async getProjects() {
+			await this.storeProject.fetchProjects(this.pagination)
+			this.projects = this.storeProject.getProjectsList
+		},
 		async submitForm(): Promise<void> {
 			this.formLoading = true
 			try {
 				if (this.$route.params.id) {
-					await this.store.fetchUpdateProject(this.project)
-					this.toast.info('Project Updated successfully')
+					await this.store.fetchUpdateActivity(this.activity)
+					this.toast.info('Activity Updated successfully')
 				} else {
-					await this.store.fetchSaveProject(this.project)
-					this.toast.success('Project Saved successfully')
+					await this.store.fetchSaveActivity(this.activity)
+					this.toast.success('Activity Saved successfully')
 				}
 				this.formLoading = false
-				this.$router.push({ name: 'Projects' })
+				this.$router.push({ name: 'Activity' })
 
 				this.formLoading = false
 			} catch (error) {
@@ -175,13 +198,13 @@ export default defineComponent({
 		},
 		cancel(): void {
 			this.resetForm()
-			this.$router.push({ name: 'Projects' })
+			this.$router.push({ name: 'Activity' })
 		},
 		resetForm() {
-			if (this.project) {
-				this.getProject()
+			if (this.activity) {
+				this.getActivity()
 			} else {
-				this.project = new Project()
+				this.activity = new Activity()
 			}
 		}
 	}
