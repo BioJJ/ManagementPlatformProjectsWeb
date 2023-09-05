@@ -1,6 +1,8 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import { authGuard, authGuardLayout } from '../_helpers/navigationGuards'
 import clientSRoutes from './clients.routes'
+import projectSRoutes from './projects.routes'
+import activitiesRoutes from './activities.routes'
 
 const routes: Array<RouteRecordRaw> = [
 	{
@@ -25,31 +27,9 @@ const routes: Array<RouteRecordRaw> = [
 				component: () =>
 					import(/* webpackChunkName: "home" */ './../views/user/User.vue')
 			},
-			{
-				path: '/projects',
-				name: 'Projects',
-				beforeEnter: authGuard,
-				meta: {
-					title: 'Projects'
-				},
-				component: () =>
-					import(
-						/* webpackChunkName: "home" */ './../views/projects/Projects.vue'
-					)
-			},
-			{
-				path: '/activities',
-				name: 'Activities',
-				beforeEnter: authGuard,
-				meta: {
-					title: 'Activities'
-				},
-				component: () =>
-					import(
-						/* webpackChunkName: "home" */ './../views/activities/Activities.vue'
-					)
-			},
-			...clientSRoutes
+			...clientSRoutes,
+			...projectSRoutes,
+			...activitiesRoutes
 		]
 	},
 	{
